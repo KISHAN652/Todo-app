@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Todo App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Advanced Todo App</h1>
+            <button class="dark-mode-toggle" id="dark-mode-toggle">🌙</button>
+        </div>
+        <div class="input-group">
+            <input type="text" id="todo-input" placeholder="Add a new todo...">
+            <select id="category-select">
+                <option value="personal">Personal</option>
+                <option value="work">Work</option>
+                <option value="shopping">Shopping</option>
+                <option value="other">Other</option>
+            </select>
+            <select id="priority-select">
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
+            <input type="date" id="due-date-input">
+            <button id="add-btn">Add</button>
+        </div>
+        <div class="search-group">
+            <input type="text" id="search-input" placeholder="Search todos...">
+        </div>
+        <ul class="todo-list" id="todo-list"></ul>
+        <div class="stats">
+            <div>Total: <span id="total-count">0</span> | Completed: <span id="completed-count">0</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="active">Active</button>
+            <button class="filter-btn" data-filter="completed">Completed</button>
+            <button class="filter-btn" data-filter="personal">Personal</button>
+            <button class="filter-btn" data-filter="work">Work</button>
+            <button class="filter-btn" data-filter="shopping">Shopping</button>
+            <button class="filter-btn" data-filter="other">Other</button>
+        </div>
+        <div class="export-import">
+            <button id="export-btn">Export</button>
+            <input type="file" id="import-input" accept=".json" style="display: none;">
+            <button id="import-btn">Import</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
