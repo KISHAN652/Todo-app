@@ -19,7 +19,7 @@ Export/Import: Export todos as JSON files or import them from JSON files.
 Statistics: View total todos, completed count, and progress bar.
 Responsive Design: Works seamlessly on desktop and mobile devices.
 Animations: Smooth transitions and animations for a modern feel.
-                    *Technologies Used*
+                    #Technologies Used#
 HTML5: Structure and markup
 CSS3: Styling with animations and responsive design
 JavaScript (ES6+): Functionality, DOM manipulation, and local storage
