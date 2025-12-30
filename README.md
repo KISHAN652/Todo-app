@@ -1,10 +1,10 @@
-                                 ##Advanced Todo App##
+#Advanced Todo App#
 A modern, feature-rich Todo application built with HTML, CSS, and JavaScript. This app offers a sleek UI with animations, local storage persistence, and advanced features for efficient task management.
 
-                        #Description#
+#Description#
 This Advanced Todo App allows users to create, manage, and organize their tasks with categories, priorities, due dates, and more. It features a responsive design, dark mode, drag-and-drop reordering, search functionality, and the ability to export/import todos. All data is stored locally in the browser for privacy and offline use.
 
-                         #Features#
+#Features#
 Add, Edit, and Delete Todos: Easily create new tasks, modify existing ones, or remove them.
 Mark as Complete: Check off completed tasks with a visual strike-through effect.
 Categories: Organize todos into categories like Personal, Work, Shopping, and Other.
@@ -19,11 +19,11 @@ Export/Import: Export todos as JSON files or import them from JSON files.
 Statistics: View total todos, completed count, and progress bar.
 Responsive Design: Works seamlessly on desktop and mobile devices.
 Animations: Smooth transitions and animations for a modern feel.
-                    *Technologies Used*
+#Technologies Used#
 HTML5: Structure and markup
 CSS3: Styling with animations and responsive design
 JavaScript (ES6+): Functionality, DOM manipulation, and local storage
-                            #Usage#
+#Usage#
 Adding a Todo: Enter the task text, select a category, priority, and due date, then click "Add".
 Editing a Todo: Click the "Edit" button on a todo item and modify the text.
 Completing a Todo: Check the checkbox to mark as complete.
