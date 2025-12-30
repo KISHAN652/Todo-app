@@ -13,8 +13,38 @@ const progressFill = document.getElementById('progress-fill');
 const exportBtn = document.getElementById('export-btn');
 const importBtn = document.getElementById('import-btn');
 const importInput = document.getElementById('import-input');
+const installBtn = document.getElementById('install-btn');
+
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = 'flex';
+});
+
+installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            installBtn.style.display = 'none';
+        }
+        deferredPrompt = null;
+    }
+});
 
 let todos = JSON.parse(localStorage.getItem('todos')) || [];
+
+// Ensure all todos have IDs (Migration for old todos)
+todos = todos.map(todo => {
+    if (!todo.id) {
+        todo.id = Math.random().toString(36).substr(2, 9) + Date.now().toString();
+    }
+    return todo;
+});
+saveTodos(); // Save the migrated IDs immediately
+
+
 let currentFilter = 'all';
 let draggedElement = null;
 
@@ -32,13 +62,13 @@ function renderTodos() {
         filteredTodos = filteredTodos.filter(todo => todo.text.toLowerCase().includes(searchTerm));
     }
 
-    filteredTodos.forEach((todo, index) => {
+    filteredTodos.forEach((todo) => {
         const li = document.createElement('li');
         li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
         li.draggable = true;
-        li.dataset.index = index;
+        li.dataset.id = todo.id;
         li.innerHTML = `
-                    <input type="checkbox" ${todo.completed ? 'checked' : ''} onchange="toggleComplete(${index})">
+                    <input type="checkbox" ${todo.completed ? 'checked' : ''} onchange="toggleComplete('${todo.id}')">
                     <div class="todo-content">
                         <span class="todo-text">${todo.text}</span>
                         <div class="todo-meta">
@@ -48,8 +78,8 @@ function renderTodos() {
                         </div>
                     </div>
                     <div class="actions">
-                        <button class="edit-btn" onclick="editTodo(${index})">Edit</button>
-                        <button class="delete-btn" onclick="deleteTodo(${index})">Delete</button>
+                        <button class="edit-btn" onclick="editTodo('${todo.id}')">Edit</button>
+                        <button class="delete-btn" onclick="deleteTodo('${todo.id}')">Delete</button>
                     </div>
                 `;
         li.addEventListener('dragstart', handleDragStart);
@@ -67,7 +97,15 @@ function addTodo() {
     const priority = prioritySelect.value;
     const dueDate = dueDateInput.value;
     if (text) {
-        todos.push({ text, category, priority, dueDate, completed: false });
+        const newTodo = {
+            id: Date.now().toString(),
+            text,
+            category,
+            priority,
+            dueDate,
+            completed: false
+        };
+        todos.push(newTodo);
         todoInput.value = '';
         dueDateInput.value = '';
         saveTodos();
@@ -75,26 +113,34 @@ function addTodo() {
     }
 }
 
-function toggleComplete(index) {
-    todos[index].completed = !todos[index].completed;
-    saveTodos();
-    renderTodos();
-}
-
-function editTodo(index) {
-    const todo = todos[index];
-    const newText = prompt('Edit todo:', todo.text);
-    if (newText !== null && newText.trim()) {
-        todo.text = newText.trim();
+function toggleComplete(id) {
+    const todo = todos.find(t => t.id === id);
+    if (todo) {
+        todo.completed = !todo.completed;
         saveTodos();
         renderTodos();
     }
 }
 
-function deleteTodo(index) {
-    todos.splice(index, 1);
-    saveTodos();
-    renderTodos();
+function editTodo(id) {
+    const todo = todos.find(t => t.id === id);
+    if (todo) {
+        const newText = prompt('Edit todo:', todo.text);
+        if (newText !== null && newText.trim()) {
+            todo.text = newText.trim();
+            saveTodos();
+            renderTodos();
+        }
+    }
+}
+
+function deleteTodo(id) {
+    const index = todos.findIndex(t => t.id === id);
+    if (index !== -1) {
+        todos.splice(index, 1);
+        saveTodos();
+        renderTodos();
+    }
 }
 
 function saveTodos() {
@@ -134,13 +180,20 @@ function handleDragOver(e) {
 
 function handleDrop(e) {
     e.preventDefault();
-    if (draggedElement !== e.target && e.target.classList.contains('todo-item')) {
-        const draggedIndex = parseInt(draggedElement.dataset.index);
-        const targetIndex = parseInt(e.target.dataset.index);
-        const draggedTodo = todos.splice(draggedIndex, 1)[0];
-        todos.splice(targetIndex, 0, draggedTodo);
-        saveTodos();
-        renderTodos();
+    const targetItem = e.target.closest('.todo-item');
+    if (draggedElement && targetItem && draggedElement !== targetItem) {
+        const draggedId = draggedElement.dataset.id;
+        const targetId = targetItem.dataset.id;
+
+        const draggedIndex = todos.findIndex(t => t.id === draggedId);
+        const targetIndex = todos.findIndex(t => t.id === targetId);
+
+        if (draggedIndex !== -1 && targetIndex !== -1) {
+            const draggedTodo = todos.splice(draggedIndex, 1)[0];
+            todos.splice(targetIndex, 0, draggedTodo);
+            saveTodos();
+            renderTodos();
+        }
     }
 }
 
